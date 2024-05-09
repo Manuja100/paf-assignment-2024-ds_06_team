@@ -105,6 +105,7 @@ const WorkoutForm3Days = (props) => {
         }
       );
       console.log("Workout plan added successfully:", response.data);
+      window.reload();
      
     } catch (error) {
       console.error("Error adding workout plan:", error);

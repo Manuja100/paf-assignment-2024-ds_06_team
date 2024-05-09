@@ -5,7 +5,7 @@ import { Box, createTheme, Stack, ThemeProvider } from "@mui/material";
 import Navbar from "./layout/Navbar";
 import Add from "./components/Feed/Add";
 import {useState, useEffect} from "react";
-import {BrowserRouter as Router, Routes, Route} from "react-router-dom";
+import {BrowserRouter as Router, Routes, Route, Navigate} from "react-router-dom";
 import Login from "./components/User/LoginUI";
 import SignUp from "./components/User/SignUpUI";
 import SettingSideBar from "./components/User/SettingSideBar";
@@ -41,6 +41,7 @@ function App() {
     <Router>
       <ThemeProvider theme={darkTheme}>
         <Routes>
+        <Route path="/*" element={<Navigate to="/login" />} />
           <Route element={<PublicRoutes />}>
             <Route path="/login" element={ <Box bgcolor={"background.default"} color={"text.primary"} > <Login /></Box>
             }  />

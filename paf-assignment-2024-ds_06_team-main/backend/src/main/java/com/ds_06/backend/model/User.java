@@ -42,7 +42,6 @@ public class User implements UserDetails{
         // TODO Auto-generated method stub
         return this.username;
     }
-   
 
     public boolean isAccountNonExpired() {
         return true;

@@ -1,6 +1,5 @@
 package com.ds_06.backend.controller;
 
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
@@ -28,16 +27,18 @@ public class ImageController {
     private ImageService imageService;
 
     @PostMapping("/upload")
-    public ResponseEntity<String> uploadImage(@RequestParam("description") String description, @RequestParam("file") MultipartFile file ,@RequestParam("userID") String userID) {
+    public ResponseEntity<String> uploadImage(@RequestParam("description") String description,
+            @RequestParam("file") MultipartFile file, @RequestParam("userID") String userID,
+            @RequestParam("username") String username) {
         try {
-            imageService.uploadImage(description, file, userID);
+            imageService.uploadImage(description, file, userID, username);
             return ResponseEntity.status(HttpStatus.OK).body("Image uploaded successfully.");
         } catch (IOException e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error uploading image.");
         }
     }
 
-   @GetMapping("/{id}")
+    @GetMapping("/{id}")
     public ResponseEntity<byte[]> getImage(@PathVariable("id") String id) {
         Optional<Image> optionalImage = imageService.getImageById(id);
         if (optionalImage.isPresent()) {
@@ -58,21 +59,26 @@ public class ImageController {
         }
     }
 
+    // @GetMapping("/imageByUser/{userID}")
+    // public ResponseEntity<Optional<List<Image>>> getImageByUserId(@PathVariable
+    // String userID){
+    // return new
+    // ResponseEntity<Optional<List<Image>>>(imageService.findImageByUserID(userID),HttpStatus.OK);
+    // }
 
-
-    @GetMapping("/imageByUser/{userID}")
-    public ResponseEntity<Optional<List<Image>>> getImageByUserId(@PathVariable String userID){
-        return new ResponseEntity<Optional<List<Image>>>(imageService.findImageByUserID(userID),HttpStatus.OK);
+    @GetMapping("/imageByUser/{username}")
+    public ResponseEntity<Optional<List<Image>>> getImageByUserName(@PathVariable String username) {
+        return new ResponseEntity<Optional<List<Image>>>(imageService.findImageByUserName(username), HttpStatus.OK);
     }
 
-
     @PutMapping("/{id}")
-    public ResponseEntity<String> updateImage(@PathVariable("id") String id, @RequestParam("description") String descripton) {
+    public ResponseEntity<String> updateImage(@PathVariable("id") String id, @RequestBody Image description) {
         try {
-            imageService.updateImageName(id, descripton);
-            return ResponseEntity.ok().body("Image name updated successfully.");
+            imageService.updateImageName(id, description.getDescription()); // Assuming a method to update image
+                                                                            // description
+            return ResponseEntity.ok().body("Image description updated successfully.");
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error updating image name.");
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error updating image description.");
         }
     }
 
@@ -86,7 +92,4 @@ public class ImageController {
         }
     }
 
-    
 }
-
-

@@ -117,6 +117,7 @@ export default function Settings() {
           headers: { Authorization: `Bearer ${token}` },
         })
         .then((res) => {
+          console.log(res.data)
           let {
             username,
             firstname,
@@ -208,7 +209,6 @@ export default function Settings() {
               setRenderPage(true);
             })
             .catch((err) => {
-              console.log(err);
               setMessage("Couldn't update");
               setSeverity("error");
             });
@@ -351,8 +351,9 @@ export default function Settings() {
                   <InputLabel>Gender</InputLabel>
                   <Select
                     name="Gender"
-                    value={userDetails.Gender}
+                    value={userDetails.gender}
                     onChange={handleChange}
+                    defaultValue={userDetails.gender}
                   >
                     <MenuItem value="Male">Male</MenuItem>
                     <MenuItem value="Female">Female</MenuItem>

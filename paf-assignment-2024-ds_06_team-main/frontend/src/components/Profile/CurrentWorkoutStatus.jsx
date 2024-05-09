@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from "react";
+import React, { useState, useEffect } from "react";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import Dialog from "@mui/material/Dialog";
@@ -7,7 +7,7 @@ import DialogContent from "@mui/material/DialogContent";
 import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
 import TextField from "@mui/material/TextField";
-import {Card} from "@mui/material";
+import { Card } from "@mui/material";
 import axios from "axios";
 
 export default function CurrentWorkoutStatus() {
@@ -27,7 +27,9 @@ export default function CurrentWorkoutStatus() {
   useEffect(() => {
     // Fetch all workout statuses from the backend
     axios
-      .get("http://localhost:8080/workoutstatus/")
+      .get("http://localhost:8080/workoutstatus/", {
+        headers: { Authorization: `Bearer ${token}` },
+      })
       .then((response) => {
         setWorkoutStatuses(response.data);
       })
@@ -49,7 +51,8 @@ export default function CurrentWorkoutStatus() {
   const handleOpen = () => {
     axios
       .get(`http://localhost:8080/workoutstatus/${"391a0110"}`, {
-        headers: {Authorization: `Bearer ${token}`}})
+        headers: { Authorization: `Bearer ${token}` },
+      })
       .then((response) => {
         setUpdatedStatus(response.data);
         setOpen(true);
@@ -66,11 +69,10 @@ export default function CurrentWorkoutStatus() {
   const handleUpdate = () => {
     // Send updated status to the backend
     axios
-      .put(`http://localhost:8080/workoutstatus`, updatedStatus,{
+      .put(`http://localhost:8080/workoutstatus`, updatedStatus, {
         headers: { Authorization: `Bearer ${token}` },
       })
       .then((response) => {
-        console.log(response.data);
         const updatedWorkoutStatuses = [...workoutStatuses];
         updatedWorkoutStatuses[activeIndex] = updatedStatus;
         setWorkoutStatuses(updatedWorkoutStatuses);
@@ -118,7 +120,7 @@ export default function CurrentWorkoutStatus() {
         Current Workout Status
       </h2>
       <Card
-        sx={{margin: 0}}
+        sx={{ margin: 0 }}
         style={{
           borderRadius: "1rem",
           boxShadow: "0px 0px 8px rgba(0, 0, 0, 0.2)",
@@ -183,11 +185,11 @@ export default function CurrentWorkoutStatus() {
                   <Button
                     variant="outlined"
                     onClick={handlePrevComponent}
-                    style={{marginLeft: "10px"}}
+                    style={{ marginLeft: "10px" }}
                   >
                     {"<"}
                   </Button>
-                  <Box style={{flexGrow: 1, textAlign: "center"}}>
+                  <Box style={{ flexGrow: 1, textAlign: "center" }}>
                     <h4
                       style={{
                         fontSize: "16px",
@@ -207,7 +209,7 @@ export default function CurrentWorkoutStatus() {
                   <Button
                     variant="outlined"
                     onClick={handleNextComponent}
-                    style={{marginRight: "10px"}}
+                    style={{ marginRight: "10px" }}
                   >
                     {">"}
                   </Button>
@@ -216,7 +218,7 @@ export default function CurrentWorkoutStatus() {
             </>
           )}
           <br />
-          <Box sx={{textAlign: "center", width: "100%"}}>
+          <Box sx={{ textAlign: "center", width: "100%" }}>
             <h3
               style={{
                 fontSize: "20px",
@@ -228,17 +230,17 @@ export default function CurrentWorkoutStatus() {
               Running Stats
             </h3>
             {workoutStatuses.length > 0 && (
-              <ul style={{listStyleType: "none", padding: 0}}>
+              <ul style={{ listStyleType: "none", padding: 0 }}>
                 <li>
                   <b>Fastest Duration</b>{" "}
-                  <h3 style={{color: "green"}}>
+                  <h3 style={{ color: "green" }}>
                     {workoutStatuses[activeIndex]?.time}
                   </h3>
                 </li>
                 <br />
-                <li style={{marginTop: "-4%"}}>
+                <li style={{ marginTop: "-4%" }}>
                   <b>Longest Distance</b>{" "}
-                  <h3 style={{color: "green"}}>
+                  <h3 style={{ color: "green" }}>
                     {" "}
                     {workoutStatuses[activeIndex]?.distance} m
                   </h3>
@@ -248,7 +250,7 @@ export default function CurrentWorkoutStatus() {
             <Button
               variant="outlined"
               onClick={handleOpen}
-              style={{marginTop: "-15px", marginBottom: "-10%"}}
+              style={{ marginTop: "-15px", marginBottom: "-10%" }}
             >
               Update
             </Button>
@@ -271,7 +273,7 @@ export default function CurrentWorkoutStatus() {
             fullWidth
             value={updatedStatus.benchpress}
             onChange={(e) =>
-              setUpdatedStatus({...updatedStatus, benchpress: e.target.value})
+              setUpdatedStatus({ ...updatedStatus, benchpress: e.target.value })
             }
           />
           <TextField
@@ -282,7 +284,7 @@ export default function CurrentWorkoutStatus() {
             fullWidth
             value={updatedStatus.deadlift}
             onChange={(e) =>
-              setUpdatedStatus({...updatedStatus, deadlift: e.target.value})
+              setUpdatedStatus({ ...updatedStatus, deadlift: e.target.value })
             }
           />
           <TextField
@@ -293,7 +295,7 @@ export default function CurrentWorkoutStatus() {
             fullWidth
             value={updatedStatus.squat}
             onChange={(e) =>
-              setUpdatedStatus({...updatedStatus, squat: e.target.value})
+              setUpdatedStatus({ ...updatedStatus, squat: e.target.value })
             }
           />
           <TextField
@@ -310,7 +312,7 @@ export default function CurrentWorkoutStatus() {
             }}
             value={updatedStatus.time}
             onChange={(e) =>
-              setUpdatedStatus({...updatedStatus, time: e.target.value})
+              setUpdatedStatus({ ...updatedStatus, time: e.target.value })
             }
           />
 
@@ -322,7 +324,7 @@ export default function CurrentWorkoutStatus() {
             fullWidth
             value={updatedStatus.distance}
             onChange={(e) =>
-              setUpdatedStatus({...updatedStatus, distance: e.target.value})
+              setUpdatedStatus({ ...updatedStatus, distance: e.target.value })
             }
           />
         </DialogContent>

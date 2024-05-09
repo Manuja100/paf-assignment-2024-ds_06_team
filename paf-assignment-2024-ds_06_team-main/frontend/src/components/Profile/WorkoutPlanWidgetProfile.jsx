@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from "react";
+import React, { useEffect, useState } from "react";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import IconButton from "@mui/material/IconButton";
@@ -14,10 +14,8 @@ import axios from "axios";
 
 import UpdateWorkoutPlan3Days from "../WorkoutPlan/UpdateWorkoutPlan3Day";
 
-import {useParams} from "react-router-dom";
-
 // Separate component for the 3 Day Plan dialog
-function ThreeDayPlanDialog({open, onClose}) {
+function ThreeDayPlanDialog({ open, onClose }) {
   return (
     <Dialog open={open} onClose={onClose} fullWidth maxWidth="md">
       <DialogTitle>3 Day Workout Plan</DialogTitle>
@@ -31,7 +29,7 @@ function ThreeDayPlanDialog({open, onClose}) {
   );
 }
 
-function Update3DayPlan({open, onClose, workoutPlanId}) {
+function Update3DayPlan({ open, onClose, workoutPlanId }) {
   console.log("workout plan id: " + workoutPlanId);
   return (
     <Dialog open={open} onClose={onClose} fullWidth maxWidth="md">
@@ -47,7 +45,7 @@ function Update3DayPlan({open, onClose, workoutPlanId}) {
 }
 
 // Separate component for the 5 Day Plan dialog
-function FiveDayPlanDialog({open, onClose}) {
+function FiveDayPlanDialog({ open, onClose }) {
   return (
     <Dialog open={open} onClose={onClose} fullWidth maxWidth="md">
       <DialogTitle>5 Day Workout Plan</DialogTitle>
@@ -70,10 +68,9 @@ export default function WorkoutPlanWidgetProfile(props) {
   const userId = props.userId;
 
   const fetchWorkoutPlans = async () => {
-
     await axios
       .get(`http://localhost:8080/workoutPlans/${userId}`, {
-        headers: {Authorization: `Bearer ${token}`},
+        headers: { Authorization: `Bearer ${token}` },
       })
       .then((response) => {
         const plans = response.data;
@@ -87,7 +84,7 @@ export default function WorkoutPlanWidgetProfile(props) {
 
   useEffect(() => {
     fetchWorkoutPlans(userId);
-  },[userId]);
+  }, [userId]);
 
   const [openDialog, setOpenDialog] = useState(false);
   const [openThreeDayDialog, setOpenThreeDayDialog] = useState(false);
@@ -127,11 +124,6 @@ export default function WorkoutPlanWidgetProfile(props) {
     setUpdate3DayDialog(false);
   };
 
-  // const clickPlan = (workoutPlanId) => {
-  //   console.log("can click");
-  //   handleOpenUpdate3DayPlan();
-  // };
-
   return (
     <Box
       component="section"
@@ -161,13 +153,13 @@ export default function WorkoutPlanWidgetProfile(props) {
         <Typography
           variant="h6"
           gutterBottom
-          style={{fontWeight: "bold", marginRight: "auto"}}
+          style={{ fontWeight: "bold", marginRight: "auto" }}
         >
           Workout Plans
         </Typography>
 
         {userIDLoggedIn === userId && (
-          <IconButton onClick={handleOpenDialog} sx={{marginLeft: "5rem"}}>
+          <IconButton onClick={handleOpenDialog} sx={{ marginLeft: "5rem" }}>
             <Button variant="contained" color="primary">
               Add
             </Button>
@@ -179,7 +171,7 @@ export default function WorkoutPlanWidgetProfile(props) {
         <Button
           key={index}
           onClick={() => handleOpenUpdate3DayPlan(planData._id)}
-          style={{color: "black"}}
+          style={{ color: "black" }}
           sx={{
             display: "block",
             border: "2px solid black",

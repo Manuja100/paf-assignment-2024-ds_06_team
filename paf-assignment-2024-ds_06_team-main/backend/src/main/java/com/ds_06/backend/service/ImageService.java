@@ -26,8 +26,7 @@ public class ImageService {
     private ImageRepository imageRepository;
 
     
-
-    public void uploadImage(String description, MultipartFile file, String userID) throws IOException {
+    public void uploadImage(String description, MultipartFile file, String userID, String username) throws IOException {
         Image image = new Image();
         image.setDescription(description);
         image.setData(file.getBytes());
@@ -35,6 +34,7 @@ public class ImageService {
         image.setCreatedAt(currentDate);
         image.setLastModifiedAt(currentDate);
         image.setUserID(userID);
+        image.setUsername(username);
         imageRepository.save(image);
 
     }
@@ -49,9 +49,15 @@ public class ImageService {
     //     return imageRepository.findImageByUserID(userID);
     // }
 
-    public Optional<List<Image>> findImageByUserID(String userID){
-        return imageRepository.findImageByUserID(userID);
+    // public Optional<List<Image>> findImageByUserID(String userID){
+    //     return imageRepository.findImageByUserID(userID);
+    // }
+
+    public Optional<List<Image>> findImageByUserName(String username){
+        return imageRepository.findImageByUsername(username);
     }
+
+
 
 
     public void updateImageName(String id, String description) {

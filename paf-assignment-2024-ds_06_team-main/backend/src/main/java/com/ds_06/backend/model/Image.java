@@ -7,6 +7,8 @@ import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
 import org.springframework.data.mongodb.core.mapping.FieldType;
 
+import lombok.Data;
+
 import java.util.Date; // Change import to java.util.Date
 
 @Document(collection = "images")
@@ -24,6 +26,8 @@ public class Image {
 
     @LastModifiedDate
     private Date lastModifiedAt; // Change type to Date
+
+    private String username;
 
     // Getters and setters
 
@@ -73,6 +77,14 @@ public class Image {
 
     public void setData(byte[] data) {
         this.data = data;
+    }
+
+    public void setUsername(String username){
+        this.username = username;
+    }
+
+    public String getUsername(){
+        return this.username;
     }
 
 

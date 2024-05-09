@@ -9,7 +9,7 @@ import {
   TextField,
   Typography,
   styled,
-  Tooltip
+  Tooltip,
 } from "@mui/material";
 import {
   Add as AddIcon,
@@ -38,7 +38,10 @@ const UserBox = styled(Box)({
 const Add = () => {
   const [open, setOpen] = useState(false);
   const [description, setDescription] = useState(""); // State for description
-  const [image, setImage] = useState(null); // State for uploaded image
+  const [image, setImage] = useState(null); // State for uploaded imag
+  const userId = localStorage.getItem("userid");
+  const username = localStorage.getItem("username");
+  const token = localStorage.getItem("token");
 
   // Function to handle image upload
   const handleImageUpload = (event) => {
@@ -52,11 +55,13 @@ const Add = () => {
       const formData = new FormData();
       formData.append("description", description);
       formData.append("file", image);
-      formData.append("userID", "66235df714e07525938ce743");
+      formData.append("userID", userId);
+      formData.append("username", username);
 
       await axios.post("http://localhost:8080/images/upload", formData, {
         headers: {
           "Content-Type": "multipart/form-data",
+          Authorization: `Bearer ${token}`,
         },
       });
 
@@ -138,7 +143,8 @@ const Add = () => {
             variant="contained"
             aria-label="outlined primary button group"
           >
-            <Button onClick={handleSubmit}>Post</Button> {/* Call handleSubmit on button click */}
+            <Button onClick={handleSubmit}>Post</Button>{" "}
+            {/* Call handleSubmit on button click */}
             <Button sx={{ width: "100px" }}>
               <DateRange />
             </Button>

@@ -13,6 +13,8 @@ export default function ProfileIconFollowers(props) {
 
   const userIDLoggedIn = localStorage.getItem("userid");
   const userId = props.userId;
+  const username = props.username;
+
 
   return (
     <Box
@@ -32,8 +34,12 @@ export default function ProfileIconFollowers(props) {
         //insert first name and second name
         alt="Remy Sharp"
         src={profilePic}
-        sx={{width: 56, height: 56}}
+        sx={{ width: 56, height: 56 }}
       />
+      <br />
+      <Box>
+        <h4 style={{ fontSize: "14px", fontWeight: "bold" }}>{username}</h4>
+      </Box>
       <Box
         sx={{
           display: "flex",
@@ -43,26 +49,26 @@ export default function ProfileIconFollowers(props) {
         }}
       >
         <Box>
-          <h5 style={{fontSize: "14px", fontWeight: "bold"}}>Followers</h5>
-          <p style={{fontSize: "18px", fontWeight: "bold", marginTop: "5px"}}>
+          <h5 style={{ fontSize: "14px", fontWeight: "bold" }}>Followers</h5>
+          <p style={{ fontSize: "18px", fontWeight: "bold", marginTop: "5px" }}>
             {followersCount}
           </p>
         </Box>
         <Box>
-          <h5 style={{fontSize: "14px", fontWeight: "bold"}}>Following</h5>
-          <p style={{fontSize: "18px", fontWeight: "bold", marginTop: "5px"}}>
+          <h5 style={{ fontSize: "14px", fontWeight: "bold" }}>Following</h5>
+          <p style={{ fontSize: "18px", fontWeight: "bold", marginTop: "5px" }}>
             {followingCount}
           </p>
         </Box>
         <Box>
-          <h5 style={{fontSize: "14px", fontWeight: "bold"}}>Likes</h5>
-          <p style={{fontSize: "18px", fontWeight: "bold", marginTop: "5px"}}>
+          <h5 style={{ fontSize: "14px", fontWeight: "bold" }}>Likes</h5>
+          <p style={{ fontSize: "18px", fontWeight: "bold", marginTop: "5px" }}>
             {likesCount}
           </p>
         </Box>
       </Box>
       {userIDLoggedIn !== userId && (
-        <IconButton sx={{marginLeft: "0rem", marginTop: "1rem"}}>
+        <IconButton sx={{ marginLeft: "0rem", marginTop: "1rem" }}>
           <Button variant="contained" color="primary">
             Follow
           </Button>
