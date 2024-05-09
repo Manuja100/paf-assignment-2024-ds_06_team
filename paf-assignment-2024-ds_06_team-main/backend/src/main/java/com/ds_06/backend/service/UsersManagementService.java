@@ -1,9 +1,13 @@
 package com.ds_06.backend.service;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.security.oauth2.client.OAuth2ClientProperties.Registration;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -29,69 +33,63 @@ public class UsersManagementService {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
+    // function that runs when user tries to register
+    public ReqRes register(ReqRes registrationRequest) {
+        ReqRes resp = new ReqRes();
 
-//function that runs when user tries to register
-public ReqRes register(ReqRes registrationRequest)
-{
-    ReqRes resp = new ReqRes();
+        try {
 
-    try{
-        User user = new User();
-        user.setUsername(registrationRequest.getUsername());
-        user.setFirstname(registrationRequest.getFirstname());
-        user.setLastname(registrationRequest.getLastname());
-        user.setEmail(registrationRequest.getEmail());
-        user.setPassword(passwordEncoder.encode(registrationRequest.getPassword()));
-        user.setProfilepic(registrationRequest.getProfilepic());
-        user.setContactnumber(registrationRequest.getContactnumber());
-        user.setCity(registrationRequest.getCity());
-        user.setGender(registrationRequest.getGender());
-        user.setBirthdate(registrationRequest.getBirthdate());
-        user.setRole("ADMIN");
+            if(userRepository.existsByUsername(registrationRequest.getUsername())) {
+                // System.out.println(registrationRequest.getUsername());
+                resp.setMessage("Username already exists");
+                resp.setStatusCode(400); // Bad request status code
+                return resp;
+            }
 
-        User newuser = userRepository.save(user);
+            User user = new User();
+            user.setUsername(registrationRequest.getUsername());
+            user.setFirstname(registrationRequest.getFirstname());
+            user.setLastname(registrationRequest.getLastname());
+            user.setEmail(registrationRequest.getEmail());
+            user.setPassword(passwordEncoder.encode(registrationRequest.getPassword()));
+            user.setProfilepic(registrationRequest.getProfilepic());
+            user.setContactnumber(registrationRequest.getContactnumber());
+            user.setCity(registrationRequest.getCity());
+            user.setGender(registrationRequest.getGender());
+            user.setBirthdate(registrationRequest.getBirthdate());
+            user.setRole("ADMIN");
+            
 
-        if(newuser.getUsername() != null)
-        {
-           UserH newuserH = new UserH();
-           newuserH.set_id(newuser.get_id());
-           newuserH.setUsername(newuser.getUsername());
-           newuserH.setFirstname(newuser.getFirstname());
-           newuserH.setLastname(newuser.getLastname());
-           newuserH.setEmail(newuser.getEmail());
-           newuserH.setPassword(newuser.getPassword());
-           newuserH.setContactnumber(newuser.getContactnumber());
-           newuserH.setCity(newuser.getCity());
-           newuserH.setRole("ADMIN");
+            User newuser = userRepository.save(user);
 
-           resp.setUserH((newuserH));
-           resp.setMessage("User Saved Successfully");
-           resp.setStatusCode(200); 
+            if (newuser.getUsername() != null) {
+
+                resp.setUser(newuser);
+                resp.setMessage("User Saved Successfully");
+                resp.setStatusCode(200);
+            }
+
+        } catch (Exception err) {
+            resp.setStatusCode(500);
+            resp.setError(err.getMessage());
         }
 
+        return resp;
     }
-    catch(Exception e){
-        resp.setStatusCode(500);
-        resp.setError(e.getMessage());
-    }   
 
-    return resp;
-}
-
-    //function that runs when a user tries to login
-    public ReqRes login(ReqRes loginRequest)
-    {
+    // function that runs when a user tries to login
+    public ReqRes login(ReqRes loginRequest) {
         ReqRes response = new ReqRes();
 
-        try{
+        try {
 
             authenticationManager
-                .authenticate(new UsernamePasswordAuthenticationToken(loginRequest.getUsername(), loginRequest.getPassword()));
+                    .authenticate(new UsernamePasswordAuthenticationToken(loginRequest.getUsername(),
+                            loginRequest.getPassword()));
 
             var user = userRepository.findByUsername(loginRequest.getUsername()).orElseThrow();
             var jwt = jwtService.generateToken(user);
             var refreshToken = jwtService.generateRefreshToken(new HashMap<>(), user);
-
 
             response.setId(user.get_id());
             response.setStatusCode(200);
@@ -100,8 +98,7 @@ public ReqRes register(ReqRes registrationRequest)
             response.setExpirationTime("24Hrs");
             response.setMessage("Successfully Logged In");
 
-        }
-        catch(Exception e){
+        } catch (Exception e) {
             response.setUsername(loginRequest.getUsername());
             response.setStatusCode(500);
             response.setMessage(e.getMessage());
@@ -112,17 +109,15 @@ public ReqRes register(ReqRes registrationRequest)
     }
 
     // function to generate refresh token
-    public ReqRes refreshToken(ReqRes refreshTokenRequest)
-    {
+    public ReqRes refreshToken(ReqRes refreshTokenRequest) {
         ReqRes response = new ReqRes();
 
-        try{
+        try {
 
             String user_name = jwtService.extractUsername(refreshTokenRequest.getToken());
             User user = userRepository.findByUsername(user_name).orElseThrow();
 
-            if(jwtService.isValid(refreshTokenRequest.getToken(),user))
-            {
+            if (jwtService.isValid(refreshTokenRequest.getToken(), user)) {
                 var jwt = jwtService.generateToken(user);
                 response.setStatusCode(200);
                 response.setToken(jwt);
@@ -133,8 +128,7 @@ public ReqRes register(ReqRes registrationRequest)
 
             response.setStatusCode(200);
             return response;
-        }
-        catch(Exception e){
+        } catch (Exception e) {
             response.setStatusCode(500);
             response.setMessage(e.getMessage());
             return response;
@@ -142,17 +136,14 @@ public ReqRes register(ReqRes registrationRequest)
 
     }
 
-    //function to update user details
-    public ReqRes updateUser(User updatedUser)
-    {
+    // function to update user details
+    public ReqRes updateUser(User updatedUser) {
         ReqRes reqRes = new ReqRes();
-        
-        try
-        {
+
+        try {
             Optional<User> userOptional = userRepository.findByUsername(updatedUser.getUsername());
 
-            if(userOptional.isPresent())
-            {
+            if (userOptional.isPresent()) {
                 User existingUser = userOptional.get();
                 existingUser.setFirstname(updatedUser.getFirstname());
                 existingUser.setLastname(updatedUser.getLastname());
@@ -160,36 +151,31 @@ public ReqRes register(ReqRes registrationRequest)
                 existingUser.setContactnumber(updatedUser.getContactnumber());
                 existingUser.setCity(updatedUser.getCity());
                 existingUser.setBirthdate(updatedUser.getBirthdate());
+                existingUser.setGender(updatedUser.getGender());
 
-                if(updatedUser.getPassword() != null && !updatedUser.getPassword().isEmpty())
-                {
-                    existingUser.setPassword(passwordEncoder.encode(updatedUser.getPassword()));  
+                if (updatedUser.getPassword() != null && !updatedUser.getPassword().isEmpty()) {
+                    existingUser.setPassword(passwordEncoder.encode(updatedUser.getPassword()));
                 }
 
                 User savedUser = userRepository.save(existingUser);
                 reqRes.setUser(savedUser);
                 reqRes.setStatusCode(200);
                 reqRes.setMessage("User updated successfully");
-            }
-            else
-            {
+            } else {
                 reqRes.setStatusCode(404);
                 reqRes.setMessage("User not found for update");
-                
+
             }
 
-        }
-        catch(Exception e)
-        {
+        } catch (Exception e) {
             reqRes.setStatusCode(500);
             reqRes.setMessage(e.getMessage());
         }
-       
+
         return reqRes;
     }
 
-    public ReqRes deleteUser(String userId)
-    {
+    public ReqRes deleteUser(String userId) {
 
         ReqRes reqRes = new ReqRes();
         userRepository.deleteById(userId);
@@ -200,20 +186,21 @@ public ReqRes register(ReqRes registrationRequest)
         return reqRes;
     }
 
-    // public ReqRes resetPassword(String oldPassword, String currentPassword, String newPassword)
+    // public ReqRes resetPassword(String oldPassword, String currentPassword,
+    // String newPassword)
     // {
-    //     String encodedCurrentPassword = passwordEncoder.encode(currentPassword);
-    //     ReqRes res = new ReqRes();
+    // String encodedCurrentPassword = passwordEncoder.encode(currentPassword);
+    // ReqRes res = new ReqRes();
 
-    //     if (encodedCurrentPassword == oldPassword)
-    //     {
-    //         res.setStatusCode(401);
-    //         res.setMessage("Your new password is same as your current password");
-    //     }
-    //     else
-    //     {
-            
-    //     }
+    // if (encodedCurrentPassword == oldPassword)
+    // {
+    // res.setStatusCode(401);
+    // res.setMessage("Your new password is same as your current password");
+    // }
+    // else
+    // {
+
+    // }
     // }
 
 }

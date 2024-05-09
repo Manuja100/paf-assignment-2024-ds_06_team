@@ -14,6 +14,8 @@ import Container from "@mui/material/Container";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import bg from "../../images/360_F_112813842_J6IBNQcLs3Ttdl65rhKko9pND2FYTvrd.jpg";
 import MenuItem from "@mui/material/MenuItem";
+import Snackbar from "@mui/material/Snackbar";
+import Alert from "@mui/material/Alert";
 
 function Copyright(props) {
   return (
@@ -41,17 +43,32 @@ const ContainerStyle = styled(Container)(({ theme }) => ({
 
 export default function SignUp() {
   const navigate = useNavigate();
+  const [message, setMessage] = useState("");
+  const [severity, setSeverity] = useState("error");
+  const [open, setOpen] = useState(false);
 
   const genders = [
     {
-      value: 'M',
-      label: 'Male',
+      value: "M",
+      label: "Male",
     },
     {
-      value: 'F',
-      label: 'Female'
-    }
+      value: "F",
+      label: "Female",
+    },
   ];
+
+  const handleClose = (event, reason) => {
+    if (reason === "clickaway") {
+      return;
+    }
+
+    setOpen(false);
+  };
+
+  const handleClick = () => {
+    setOpen(true);
+  };
 
   const phoneRegExp =
     /^((\\+[1-9]{1,4}[ \\-]*)|(\\([0-9]{2,3}\\)[ \\-]*)|([0-9]{2,4})[ \\-]*)*?[0-9]{3,4}?[ \\-]*[0-9]{3,4}?$/;
@@ -107,11 +124,22 @@ export default function SignUp() {
       await validationSchema
         .validate(formData, { abortEarly: false })
         .then(async () => {
-          console.log(formData);
           await axios
             .post("http://localhost:8080/users/register", formData)
-            .then(() => {
-              navigate("/login");
+            .then((res) => {
+              console.log(res);
+              if (res.data.statusCode === 400) {
+                handleClick(true);
+                setMessage(res.data.message);
+                setSeverity("error");
+              } else {
+                navigate("/login");
+              }
+            })
+            .catch((err) => {
+              handleClick(true);
+              setMessage(err.getMessage());
+              setSeverity("error");
             });
         });
     } catch (error) {
@@ -240,13 +268,12 @@ export default function SignUp() {
                   )}
                 </Grid>
                 <Grid item xs={12} sm={6}>
-                  <TextField 
-                    style = {{width: "100%"}}
+                  <TextField
+                    style={{ width: "100%" }}
                     id="outlined-select-currency"
                     select
-                    label="Select Gender" 
+                    label="Select Gender"
                     defaultValue={formData.gender}
-  
                   >
                     {genders.map((option) => (
                       <MenuItem key={option.value} value={option.value}>
@@ -337,6 +364,11 @@ export default function SignUp() {
             </Box>
           </Box>
           <Copyright sx={{ mt: 5 }} />
+          <Snackbar open={open} autoHideDuration={6000} onClose={handleClose}>
+            <Alert severity={severity} variant="filled">
+              {message}
+            </Alert>
+          </Snackbar>
         </Container>
       </ContainerStyle>
     </ThemeProvider>

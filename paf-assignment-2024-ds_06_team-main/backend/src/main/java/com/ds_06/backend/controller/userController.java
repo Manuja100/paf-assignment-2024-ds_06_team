@@ -24,6 +24,8 @@ import com.ds_06.backend.model.User;
 import com.ds_06.backend.model.UserH;
 import com.ds_06.backend.service.UserService;
 import com.ds_06.backend.service.UsersManagementService;
+import org.springframework.web.bind.annotation.RequestParam;
+
 
 
 @RestController
@@ -58,11 +60,11 @@ public class userController {
     }
 
     @PostMapping("/register")
-    public EntityModel<UserH> register(@RequestBody ReqRes reg) {
+    public EntityModel<ReqRes> register(@RequestBody ReqRes reg) {
 
         ReqRes res = usersManagementService.register(reg);
         
-        return EntityModel.of(res.getUserH(),
+        return EntityModel.of(res,
         linkTo(methodOn(userController.class).login(reg)).withRel("users"));
 
     }
@@ -97,12 +99,7 @@ public class userController {
         return EntityModel.of(res,
         linkTo(methodOn(userController.class).getUsers()).withRel("users"));
     }
-
-    // @PostMapping("/reset-password")
-    // public ResponseEntity<ReqRes> resetPassword(@RequestBody User user){
-
-
-    // }
+    
 
 
 }

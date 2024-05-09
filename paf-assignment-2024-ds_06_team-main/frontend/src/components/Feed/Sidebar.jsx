@@ -63,11 +63,6 @@ const Sidebar = ({mode,setMode}) => {
           </ListItem>
         </List>
         </Card>
-      
-
-
-
-
       <Card sx={{ margin: 5 }} style={{borderRadius:"1rem", boxShadow: "0px 0px 8px rgba(0, 0, 0, 0.2)" , marginLeft:"10%", paddingBottom:"7%", scrollbarWidth: "none"}}>
       <Typography variant="h6" fontWeight={100} mt={2} style={{margin:"5%"}}>
           Recent Meal Plans

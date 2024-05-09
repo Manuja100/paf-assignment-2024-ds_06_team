@@ -22,6 +22,7 @@ const muscleGroups = ["Arms", "Legs", "Chest", "Back", "Shoulders", "Abs"];
 const UpdateWorkoutPlan3Days = (props) => {
   const workoutPlanId = props.workoutPlanId;
   const token = localStorage.getItem("token");
+
   const [workoutPlan, setWorkoutPlan] = useState({
     name: "",
     days: [
@@ -41,7 +42,7 @@ const UpdateWorkoutPlan3Days = (props) => {
         const response = await axios.get(
           `http://localhost:8080/workoutPlans/workout/${workoutPlanId}`,
           {
-            headers: { Authorization: `Bearer ${token}` },
+            headers: {Authorization: `Bearer ${token}`},
           }
         );
         const existingWorkoutPlan = response.data;
@@ -115,6 +116,27 @@ const UpdateWorkoutPlan3Days = (props) => {
     } catch (error) {
       console.error("Error updating workout plan:", error);
       setSnackbarMessage("Failed to update workout plan");
+      setSnackbarOpen(true);
+    }
+  };
+
+  const deletePlan = async (e) => {
+    e.preventDefault();
+
+    try {
+      const response = await axios.delete(
+        `http://localhost:8080/workoutPlans/${workoutPlanId}`,
+        {
+          headers: {Authorization: `Bearer ${token}`},
+        }
+      );
+      console.log("Workout plan Deleted successfully:", response.data);
+      setSnackbarMessage("Workout plan deleted successfully");
+      setSnackbarOpen(true);
+      window.reload();
+    } catch (error) {
+      console.error("Error deleting workout plan:", error);
+      setSnackbarMessage("Failed to deleted workout plan");
       setSnackbarOpen(true);
     }
   };
@@ -248,6 +270,15 @@ const UpdateWorkoutPlan3Days = (props) => {
         ))}
         <Button type="submit" variant="contained" color="primary" fullWidth>
           Update Workout Plan
+        </Button>
+        <Button
+          type="button"
+          variant="contained"
+          color="primary"
+          fullWidth
+          onClick={deletePlan}
+        >
+          Delete
         </Button>
       </form>
       <Snackbar

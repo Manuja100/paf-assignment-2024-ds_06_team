@@ -52,7 +52,7 @@ export default function Profile({match}) {
       <Grid container spacing={2}>
         <Grid item xs={3.5}>
           <Item>
-            <ProfileIconFollowers userId={user ? user._id : ""} />
+            <ProfileIconFollowers userId={user ? user._id : ""} username = {username} />
             <br />
             <Spotify />
             <br />
@@ -61,7 +61,7 @@ export default function Profile({match}) {
         </Grid>
 
         <Grid item xs={5}>
-          <ProfileFeed userId={user ? user._id : ""} />
+          <ProfileFeed username={user ? user.username : ""} />
 
         </Grid>
 
