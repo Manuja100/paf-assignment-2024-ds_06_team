@@ -22,6 +22,9 @@ const muscleGroups = ["Arms", "Legs", "Chest", "Back", "Shoulders", "Abs"];
 const UpdateWorkoutPlan3Days = (props) => {
   const workoutPlanId = props.workoutPlanId;
   const token = localStorage.getItem("token");
+  const loggedInUser = localStorage.getItem("userid");
+  const userId = props.userId;
+  
 
   const [workoutPlan, setWorkoutPlan] = useState({
     name: "",
@@ -108,11 +111,15 @@ const UpdateWorkoutPlan3Days = (props) => {
     try {
       const response = await axios.put(
         `http://localhost:8080/workoutPlans/update`,
-        updatedWorkoutPlan
+        updatedWorkoutPlan,
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
       );
       console.log("Workout plan updated successfully:", response.data);
       setSnackbarMessage("Workout plan updated successfully");
       setSnackbarOpen(true);
+
     } catch (error) {
       console.error("Error updating workout plan:", error);
       setSnackbarMessage("Failed to update workout plan");
@@ -133,7 +140,6 @@ const UpdateWorkoutPlan3Days = (props) => {
       console.log("Workout plan Deleted successfully:", response.data);
       setSnackbarMessage("Workout plan deleted successfully");
       setSnackbarOpen(true);
-      window.reload();
     } catch (error) {
       console.error("Error deleting workout plan:", error);
       setSnackbarMessage("Failed to deleted workout plan");
@@ -183,6 +189,7 @@ const UpdateWorkoutPlan3Days = (props) => {
               </Select>
             </FormControl>
             <div style={{marginTop: "10px", marginBottom: "20px"}}>
+            {loggedInUser === userId && (
               <Button
                 variant="outlined"
                 color="secondary"
@@ -190,6 +197,7 @@ const UpdateWorkoutPlan3Days = (props) => {
               >
                 Clear Selection
               </Button>
+            )}
             </div>
             {day.sets.map((set, setIndex) => (
               <div
@@ -249,16 +257,19 @@ const UpdateWorkoutPlan3Days = (props) => {
                     />
                   </Grid>
                   <Grid item xs={1}>
+                  {loggedInUser === userId && (
                     <IconButton
                       onClick={() => handleDeleteSet(dayIndex, setIndex)}
                       color="error"
                     >
                       <CloseIcon />
                     </IconButton>
+                  )}
                   </Grid>
                 </Grid>
               </div>
             ))}
+            {loggedInUser === userId && (
             <Button
               variant="outlined"
               color="primary"
@@ -266,11 +277,17 @@ const UpdateWorkoutPlan3Days = (props) => {
             >
               Add Exercise Set
             </Button>
+            )}
           </Paper>
         ))}
+        {loggedInUser === userId && (
         <Button type="submit" variant="contained" color="primary" fullWidth>
           Update Workout Plan
         </Button>
+        )}
+        <br />
+        <br />
+        {loggedInUser === userId && (
         <Button
           type="button"
           variant="contained"
@@ -280,6 +297,7 @@ const UpdateWorkoutPlan3Days = (props) => {
         >
           Delete
         </Button>
+        )}
       </form>
       <Snackbar
         open={snackbarOpen}

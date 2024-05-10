@@ -40,7 +40,6 @@ public class ImageService {
     }
 
 
-
     public List<Image> getAllImages(Sort sort) {
         return imageRepository.findAll(sort);
 }
@@ -56,8 +55,6 @@ public class ImageService {
     public Optional<List<Image>> findImageByUserName(String username){
         return imageRepository.findImageByUsername(username);
     }
-
-
 
 
     public void updateImageName(String id, String description) {

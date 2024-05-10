@@ -16,6 +16,8 @@ import CloseIcon from "@mui/icons-material/Close";
 import {Snackbar} from "@mui/material";
 import MuiAlert from "@mui/material/Alert";
 import axios from "axios";
+import { useNavigate} from "react-router-dom";
+
 
 const muscleGroups = ["Arms", "Legs", "Chest", "Back", "Shoulders", "Abs"];
 
@@ -28,6 +30,7 @@ const WorkoutForm3Days = (props) => {
       {dayNumber: 3, muscleGroups: [], sets: []},
     ],
   });
+
 
   const getAllSelectedMuscleGroups = () => {
     const selectedMuscleGroups = new Set();
@@ -69,6 +72,7 @@ const WorkoutForm3Days = (props) => {
 
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState("");
+  const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -86,7 +90,9 @@ const WorkoutForm3Days = (props) => {
     const currentDate = new Date().toISOString().slice(0, 10);
     const userID = localStorage.getItem("userid");
     const token = localStorage.getItem("token");
+    const username = localStorage.getItem("username");
     const split = 3;
+    
 
     const workoutPlanFinal = {
       userID: userID,
@@ -105,7 +111,9 @@ const WorkoutForm3Days = (props) => {
         }
       );
       console.log("Workout plan added successfully:", response.data);
-      window.reload();
+      setSnackbarMessage("Workout plan added successfully");
+      setSnackbarOpen(true);
+      navigate(`/profile/${username}`)
      
     } catch (error) {
       console.error("Error adding workout plan:", error);
@@ -293,7 +301,7 @@ const WorkoutForm3Days = (props) => {
           elevation={6}
           variant="filled"
           onClose={() => setSnackbarOpen(false)}
-          severity="error"
+          severity="success"
         >
           {snackbarMessage}
         </MuiAlert>
