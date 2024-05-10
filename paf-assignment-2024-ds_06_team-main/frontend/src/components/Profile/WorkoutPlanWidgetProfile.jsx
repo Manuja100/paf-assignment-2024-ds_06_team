@@ -7,10 +7,19 @@ import DialogTitle from "@mui/material/DialogTitle";
 import DialogContent from "@mui/material/DialogContent";
 import DialogActions from "@mui/material/DialogActions";
 import Button from "@mui/material/Button";
-
+import AssignmentIcon from "@mui/icons-material/Assignment";
 import WorkoutForm3Days from "../WorkoutPlan/3DaySplit";
 import WorkoutForm5Days from "../WorkoutPlan/5DaySplit";
 import axios from "axios";
+
+import {
+  Card,
+  List,
+  ListItem,
+  ListItemText,
+  ListItemAvatar,
+  Avatar
+} from "@mui/material";
 
 import UpdateWorkoutPlan3Days from "../WorkoutPlan/UpdateWorkoutPlan3Day";
 
@@ -29,13 +38,13 @@ function ThreeDayPlanDialog({ open, onClose }) {
   );
 }
 
-function Update3DayPlan({ open, onClose, workoutPlanId }) {
+function Update3DayPlan({ open, onClose, workoutPlanId, userId, username }) {
   console.log("workout plan id: " + workoutPlanId);
   return (
     <Dialog open={open} onClose={onClose} fullWidth maxWidth="md">
       <DialogTitle>Update Plan</DialogTitle>
       <DialogContent>
-        <UpdateWorkoutPlan3Days workoutPlanId={workoutPlanId} />
+        <UpdateWorkoutPlan3Days workoutPlanId={workoutPlanId} userId = {userId} username = {username}/>
       </DialogContent>
       <DialogActions>
         <Button onClick={onClose}>Close</Button>
@@ -63,6 +72,7 @@ export default function WorkoutPlanWidgetProfile(props) {
   const [planDataList, setPlanDataList] = useState([]);
   const [selectedPlanId, setSelectedPlanId] = useState(null);
   const token = localStorage.getItem("token");
+  const username = localStorage.getItem('username');
 
   const userIDLoggedIn = localStorage.getItem("userid");
   const userId = props.userId;
@@ -129,8 +139,7 @@ export default function WorkoutPlanWidgetProfile(props) {
       component="section"
       sx={{
         p: 2,
-        border: "2px solid black",
-        borderRadius: "5px",
+
         width: "90%",
         display: "flex",
         flexDirection: "column",
@@ -166,33 +175,38 @@ export default function WorkoutPlanWidgetProfile(props) {
           </IconButton>
         )}
       </Box>
-
-      {planDataList.map((planData, index) => (
-        <Button
-          key={index}
-          onClick={() => handleOpenUpdate3DayPlan(planData._id)}
-          style={{ color: "black" }}
-          sx={{
-            display: "block",
-            border: "2px solid black",
-            borderRadius: "5px",
-            width: "95%",
-            p: 2,
-            marginBottom: 2,
-            "&:hover": {
-              backgroundColor: "#f0f0f0",
-            },
-          }}
-        >
-          <Typography variant="body1" gutterBottom>
-            <b>Name:</b> {planData.name}
-          </Typography>
-          <Typography variant="body1" gutterBottom>
-            <b>Type of Plan:</b> {planData.split + " Day Plan"}
-          </Typography>
-        </Button>
-      ))}
-
+      <Card
+        sx={{ margin: 0 }}
+        style={{
+          borderRadius: "1rem",
+          boxShadow: "0px 0px 8px rgba(0, 0, 0, 0.2)",
+          width: "390px",
+          height: "200px",
+          overflowY: "auto",
+          scrollbarWidth: "none",
+        }}
+      >
+        <List sx={{ bgcolor: "background.paper" }}>
+          {planDataList.map((planData, index) => (
+            <ListItem
+              key={index}
+              alignItems="flex-start"
+              button
+              onClick={() => handleOpenUpdate3DayPlan(planData._id)}
+            >
+              <ListItemAvatar>
+                <Avatar style={{ backgroundColor: "green" }} variant="rounded">
+                  <AssignmentIcon />
+                </Avatar>
+              </ListItemAvatar>
+              <ListItemText
+                primary={planData.name}
+                secondary={planData.split + " Day Plan"}
+              />
+            </ListItem>
+          ))}
+        </List>
+      </Card>
       <Dialog open={openDialog} onClose={handleCloseDialog}>
         <DialogTitle>Add New Workout Plan</DialogTitle>
         <DialogContent>
@@ -227,7 +241,9 @@ export default function WorkoutPlanWidgetProfile(props) {
         open={openUpdate3DayDiaglog}
         onClose={handleCloseUpdate3DayPlan}
         workoutPlanId={selectedPlanId}
+        userId = {userId}
       />
+          
     </Box>
   );
 }
