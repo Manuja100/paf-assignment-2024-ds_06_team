@@ -124,7 +124,7 @@ export default function CurrentWorkoutStatus() {
         style={{
           borderRadius: "1rem",
           boxShadow: "0px 0px 8px rgba(0, 0, 0, 0.2)",
-          width: "`390px`",
+          width: "390px",
         }}
       >
         <Box

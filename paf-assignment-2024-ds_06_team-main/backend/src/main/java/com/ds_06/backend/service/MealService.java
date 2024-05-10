@@ -5,6 +5,7 @@ import java.util.Optional;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import com.ds_06.backend.model.Meal;
@@ -23,9 +24,10 @@ public class MealService {
     }
 
     //Read
-    public List<Meal> findAllMeals(){
-        return repository.findAll();
+    public List<Meal> findAllMeals(Sort sort){
+        return repository.findAll(sort);
     }
+
 
     //Read by ID
     public Meal getMealByMealId(String mealId){

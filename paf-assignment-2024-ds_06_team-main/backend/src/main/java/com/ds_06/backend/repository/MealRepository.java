@@ -13,4 +13,5 @@ public interface MealRepository extends MongoRepository<Meal,String>{
     List<Meal> findByDays(int days);
     Optional<List<Meal>> findMealPlanByUserID(String userID);
 
+
 }
